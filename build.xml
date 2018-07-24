@@ -162,17 +162,20 @@ the common tasks and can be called on to run the main aspects of all the sub-scr
 	</target>
 	
 	<target name="-ensureJdk9">
+		<echo message="Java version: ${java.version}" />
+
 		<condition property="java.version.insufficient">
 			<or>
-				<equals arg1="${ant.java.version}" arg2="1.2" />
-				<equals arg1="${ant.java.version}" arg2="1.3" />
-				<equals arg1="${ant.java.version}" arg2="1.4" />
-				<equals arg1="${ant.java.version}" arg2="1.5" />
-				<equals arg1="${ant.java.version}" arg2="1.6" />
-				<equals arg1="${ant.java.version}" arg2="1.7" />
-				<equals arg1="${ant.java.version}" arg2="1.8" />
+				<equals arg1="${java.version}" arg2="1.2" />
+				<equals arg1="${java.version}" arg2="1.3" />
+				<equals arg1="${java.version}" arg2="1.4" />
+				<equals arg1="${java.version}" arg2="1.5" />
+				<equals arg1="${java.version}" arg2="1.6" />
+				<equals arg1="${java.version}" arg2="1.7" />
+				<equals arg1="${java.version}" arg2="1.8" />
 			</or>
 		</condition>
+		<echo message="Java version insufficient: ${java.version.insufficient}" />
 		<fail if="java.version.insufficient">To compile lombok, you need JDK9 or higher; lombok requires this version because it's rather difficult to produce lombok builds that are compatible on JDK9 without at least building with JDK9. Sorry about that.</fail>
 	</target>
 	
@@ -261,8 +264,7 @@ the common tasks and can be called on to run the main aspects of all the sub-scr
 			<src path="src/j9stubs" />
 			<!-- This includes org.mapstruct.ap.spi.AstModifyingAnnotationProcessor; putting this on the classpath doesn't work (needs to be internal or a module) so we just add it and then delete the class file for convenience. -->
 		</ivy:compile>
-		<mkdir dir="build/lombok/secondaryLoading.SCL.lombok/org/mapstruct/ap/spi" />
-		<move file="build/lombok/org/mapstruct/ap/spi/AstModifyingAnnotationProcessor.class" tofile="build/lombok/secondaryLoading.SCL.lombok/org/mapstruct/ap/spi/AstModifyingAnnotationProcessor.SCL.lombok" />
+		<delete file="build/lombok/org/mapstruct/ap/spi/AstModifyingAnnotationProcessor.class" />
 		
 		<ivy:compile destdir="build/lombok/Class50" source="1.5" target="1.6" ecj="true" nowarn="true" includeSystemBootclasspath="true">
 			<bootclasspath location="build/stubs" />
